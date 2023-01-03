@@ -1,5 +1,6 @@
 package com.example.currentloaction
 
+import android.location.Address
 import android.location.Geocoder
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -47,6 +48,8 @@ class MapShowActivity : AppCompatActivity(), OnMapReadyCallback {
         drawMarker(sydney)
 
 
+
+
         mMap.setOnMarkerDragListener(object :GoogleMap.OnMarkerDragListener{
             override fun onMarkerDrag(p0: Marker) {
 
@@ -69,17 +72,24 @@ class MapShowActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun drawMarker(latLng: LatLng){
-        val markerOption=  MarkerOptions().position(latLng).title("Marker in Sydney").draggable(true).snippet(getLocation(latLng.latitude,latLng.longitude))
-        binding.address.text=markerOption.snippet
+        val markerOption=  MarkerOptions().position(latLng).title("Marker in Sydney").draggable(true)
+        binding.address.text=getLocation(latLng.latitude,latLng.longitude)
+        binding.continues.setOnClickListener {
+            onBackPressed()
+
+        }
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,20f))
         currentmarker=mMap.addMarker(markerOption)
         currentmarker?.showInfoWindow()
+
     }
     private fun getLocation(lat:Double,long:Double):String{
         val geoCoder= Geocoder(this, Locale.getDefault())
-        val address=geoCoder.getFromLocation(lat,long,1)
-        return address[0].getAddressLine(0).toString()
+        val list: List<Address> =
+            geoCoder.getFromLocation(lat, long, 1)
+
+        return list[0].getAddressLine(0)
     }
 
 

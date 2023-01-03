@@ -93,14 +93,16 @@ class MainActivity : AppCompatActivity() {
                 mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
                     val location: Location? = task.result
                     if (location != null) {
+
+                        val intent=Intent(this@MainActivity,MapShowActivity::class.java)
+                        intent.putExtra("latitude",location.latitude)
+                        intent.putExtra("longitude",location.longitude)
+                        startActivity(intent)
                         val geocoder = Geocoder(this, Locale.getDefault())
                         val list: List<Address> =
                             geocoder.getFromLocation(location.latitude, location.longitude, 1)
                         binding.apply {
-                            val intent=Intent(this@MainActivity,MapShowActivity::class.java)
-                            intent.putExtra("latitude",location.latitude)
-                            intent.putExtra("longitude",location.longitude)
-                            startActivity(intent)
+
                             tvLatitude.text = "Latitude\n${list[0].latitude}"
                             tvLongitude.text = "Longitude\n${list[0].longitude}"
                             tvCountryName.text = "Country Name\n${list[0].countryName}"
